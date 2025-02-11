@@ -67,12 +67,18 @@ const authGuard: Handle = async ({ event, resolve }) => {
   event.locals.session = session
   event.locals.user = user
 
-  if (!event.locals.session && event.url.pathname.startsWith('/private')) {
-    redirect(303, '/auth')
+  // Check if current route is an auth route
+  const isAuthRoute = event.url.pathname.startsWith('/auth')
+  const isAuthenticated = !!event.locals.session
+
+  // If not an auth route and not authenticated, redirect to login
+  if (!isAuthRoute && !isAuthenticated) {
+    throw redirect(303, '/auth')
   }
 
-  if (event.locals.session && event.url.pathname === '/auth') {
-    redirect(303, '/private')
+  // If authenticated and trying to access auth routes, redirect to home
+  if (isAuthenticated && isAuthRoute) {
+    throw redirect(303, '/')
   }
 
   return resolve(event)

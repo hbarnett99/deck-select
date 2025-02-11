@@ -1,49 +1,57 @@
-import { redirect } from '@sveltejs/kit';
-
 import type { Actions } from './$types';
+import { providers } from '$lib/utils/oauth.util';
 
-const provider = 'discord';
+interface AuthFormData {
+	email: string;
+	password: string;
+}
+
+const getFormData = async (request: Request): Promise<AuthFormData> => {
+	const formData = await request.formData();
+	return {
+		email: formData.get('email') as string,
+		password: formData.get('password') as string
+	};
+};
+
+const handleCredentials = async (
+	action: (data: AuthFormData) => Promise<{ error: Error | null }>,
+	request: Request
+) => {
+	const data = await getFormData(request);
+	const { error } = await action(data);
+
+	if (error) {
+		console.error(error);
+		return {
+			type: 'redirect' as const,
+			location: '/auth/error'
+		};
+	}
+
+	return {
+		type: 'redirect' as const,
+		location: '/private'
+	};
+};
 
 export const actions: Actions = {
-	signup: async ({ request, locals: { supabase } }) => {
-		const formData = await request.formData();
-		const email = formData.get('email') as string;
-		const password = formData.get('password') as string;
-
-		const { error } = await supabase.auth.signUp({ email, password });
-		if (error) {
-			console.error(error);
-			redirect(303, '/auth/error');
-		} else {
-			redirect(303, '/');
-		}
+	signup: async (event) => {
+		const { request, locals: { supabase } } = event;
+		return handleCredentials(
+			(data) => supabase.auth.signUp(data),
+			request
+		);
 	},
-	login: async ({ request, locals: { supabase } }) => {
-		const formData = await request.formData();
-		const email = formData.get('email') as string;
-		const password = formData.get('password') as string;
 
-		const { error } = await supabase.auth.signInWithPassword({ email, password });
-		if (error) {
-			console.error(error);
-			redirect(303, '/auth/error');
-		} else {
-			redirect(303, '/private');
-		}
+	login: async (event) => {
+		const { request, locals: { supabase } } = event;
+		return handleCredentials(
+			(data) => supabase.auth.signInWithPassword(data),
+			request
+		);
 	},
-	signInWithDiscord: async ({request, locals: { supabase }}) => {
-    console.log(request.formData());
-		const { error } = await supabase.auth.signInWithOAuth({
-			provider,
-			options: {
-				redirectTo: 'http://localhost:5173/auth/callback'
-			}
-		});
-		if (error) {
-			console.error(error);
-			redirect(303, '/auth/error');
-		} else {
-			redirect(303, '/private');
-		}
-	}
+
+	oauthDiscord: async (event) => providers.discord(event),
+	oauthGoogle: async (event) => providers.google(event),
 };
