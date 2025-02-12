@@ -1,5 +1,7 @@
+// +page.server.ts
 import type { Actions } from './$types';
 import { providers } from '$lib/utils/oauth.util';
+import { redirect } from '@sveltejs/kit';
 
 interface AuthFormData {
 	email: string;
@@ -23,16 +25,10 @@ const handleCredentials = async (
 
 	if (error) {
 		console.error(error);
-		return {
-			type: 'redirect' as const,
-			location: '/auth/error'
-		};
+		throw redirect(303, '/auth/error');
 	}
 
-	return {
-		type: 'redirect' as const,
-		location: '/private'
-	};
+	throw redirect(303, '/private');
 };
 
 export const actions: Actions = {

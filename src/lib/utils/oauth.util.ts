@@ -1,44 +1,45 @@
+// oauth.util.ts
 import type { Provider, SupabaseClient } from '@supabase/supabase-js';
 import type { RequestEvent } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 
 type SupabaseLocals = { locals: { supabase: SupabaseClient } };
 
-const handleAuthError = (error: Error | null) => {
-	if (error) {
-		console.error(error);
-		return {
-			type: 'redirect' as const,
-			location: '/auth/error'
-		};
-	}
-	return null;
-};
-
 export const signInWithOAuth = async (provider: Provider, { locals: { supabase } }: SupabaseLocals) => {
-	console.log(`Signing in with ${provider}...`);
-	const { error } = await supabase.auth.signInWithOAuth({
+	// console.log(`Initiating OAuth flow for ${provider}...`);
+
+	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider,
 		options: {
-			redirectTo: 'http://localhost:5173/auth/callback'
+			redirectTo: 'http://localhost:5173/auth/callback',
+			scopes: provider === 'discord' ? 'identify email' : undefined
 		}
 	});
-	console.log(`Sign in with ${provider} complete.`);
 
-	const errorResponse = handleAuthError(error);
-	if (errorResponse) return errorResponse;
+	// console.log('OAuth response:', {
+	// 	data: data || 'No data returned',
+	// 	error: error || 'No error returned',
+	// 	provider,
+	// 	url: data?.url || 'No URL returned'
+	// });
 
-	return {
-		type: 'redirect' as const,
-		location: '/private'
-	};
+	if (error) {
+		console.error('OAuth error:', error);
+		throw redirect(303, '/auth/error');
+	}
+
+	if (!data?.url) {
+		console.error('No redirect URL received from Supabase');
+		throw redirect(303, '/auth/error');
+	}
+
+	console.log(`Successfully initiated OAuth flow with ${provider}`);
+
+	throw redirect(303, data.url);
 };
 
 // Create a map of provider functions
 export const providers = {
 	discord: (event: RequestEvent) => signInWithOAuth('discord', event),
 	google: (event: RequestEvent) => signInWithOAuth('google', event),
-	github: (event: RequestEvent) => signInWithOAuth('github', event),
-	apple: (event: RequestEvent) => signInWithOAuth('apple', event),
-	twitch: (event: RequestEvent) => signInWithOAuth('twitch', event),
-	spotify: (event: RequestEvent) => signInWithOAuth('spotify', event)
 } as const;

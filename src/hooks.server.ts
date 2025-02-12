@@ -67,8 +67,8 @@ const authGuard: Handle = async ({ event, resolve }) => {
   event.locals.session = session
   event.locals.user = user
 
-  // Check if current route is an auth route
-  const isAuthRoute = event.url.pathname.startsWith('/auth')
+  // Check if current route is an auth route that isn't signout
+  const isAuthRoute = event.url.pathname.startsWith('/auth') && !event.url.pathname.endsWith('/signout')
   const isAuthenticated = !!event.locals.session
 
   // If not an auth route and not authenticated, redirect to login

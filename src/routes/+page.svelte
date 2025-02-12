@@ -8,10 +8,10 @@
 	<h1>Henry's Site</h1>
 	<p>Getting things done. Lmao jk~</p>
 	<h2>Instruments</h2>
-	<ul>
-		{#each data.instruments as instrument}
-			<li>{instrument.name}</li>
-		{/each}
-	</ul>
+<!--	<ul>-->
+<!--		{#each data.instruments as instrument}-->
+<!--			<li>{instrument.name}</li>-->
+<!--		{/each}-->
+<!--	</ul>-->
   <Button>My Button</Button>
 </div>
