@@ -1,34 +1,19 @@
-export interface Player {
+export interface Profile {
 	id: string;
-	name: string;
-	isReady: boolean;
-	isAdmin: boolean;
+	username: string | null;
+}
+
+export interface LobbyPlayer {
+	id: string;
+	lobby_id: string;
+	user_id: string;
+	is_admin: boolean;
+	is_ready: boolean;
+	joined_at: string;
+	profiles?: Profile;
 }
 
 export interface Lobby {
-	id: string;
-	name: string;
-	createdAt: Date;
-	isPractice: boolean;
-	maxPlayers: number;
-	gameStarted: boolean;
-	players: Player[];
-}
-
-export interface LobbySettings {
-	practiceModeEnabled: boolean;
-	maxPlayers: number;
-	// Add more settings as needed
-}
-
-export interface CreateLobbyParams {
-	name: string;
-	isPractice?: boolean;
-	maxPlayers?: number;
-}
-
-// Database types
-export interface DBLobby {
 	id: string;
 	name: string;
 	created_at: string;
@@ -36,23 +21,13 @@ export interface DBLobby {
 	is_practice: boolean;
 	max_players: number;
 	game_started: boolean;
-	settings: LobbySettings;
+	settings: Record<string, unknown>;
 	updated_at: string;
+	lobby_players?: LobbyPlayer[];
 }
 
-export interface DBLobbyPlayer {
-	id: string;
-	lobby_id: string;
-	user_id: string;
-	is_admin: boolean;
-	is_ready: boolean;
-	joined_at: string;
-}
-
-// Event types
-export interface LobbyEvent {
-	type: 'player_joined' | 'player_left' | 'player_ready' | 'game_started' | 'admin_changed';
-	lobbyId: string;
-	playerId: string;
-	timestamp: Date;
+export interface LobbyStore {
+	activelobby: Lobby | null;
+	availableLobbies: Lobby[];
+	refreshLobbies: () => Promise<void>;
 }

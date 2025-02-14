@@ -1,10 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 
-	onMount(async () => {
-
-	});
-
+	onMount(async () => {});
 </script>
 
 <div>

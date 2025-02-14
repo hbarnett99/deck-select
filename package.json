@@ -13,7 +13,8 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
-		"test": "npm run test:unit -- --run"
+		"test": "npm run test:unit -- --run",
+		"update-types": "supabase gen types typescript --project-id \"fckttldjpgzgdxrdweaa\" > src/lib/types/database.types.ts"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
@@ -23,7 +24,7 @@
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"autoprefixer": "^10.4.20",
-		"bits-ui": "^1.0.0-next.94",
+		"bits-ui": "^1.1.0",
 		"clsx": "^2.1.1",
 		"embla-carousel-svelte": "^8.5.2",
 		"eslint": "^9.18.0",
@@ -34,9 +35,10 @@
 		"lucide-svelte": "^0.475.0",
 		"mode-watcher": "^0.5.1",
 		"paneforge": "^1.0.0-next.2",
-		"prettier": "^3.4.2",
+		"prettier": "3.5.1",
 		"prettier-plugin-svelte": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.10",
+		"supabase": "^2.12.1",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
 		"svelte-sonner": "^0.3.28",
@@ -54,6 +56,8 @@
 	},
 	"dependencies": {
 		"@supabase/ssr": "^0.5.2",
-		"@supabase/supabase-js": "^2.48.1"
+		"@supabase/supabase-js": "^2.48.1",
+		"date-fns": "^4.1.0",
+		"tippy.js": "^6.3.7"
 	}
 }

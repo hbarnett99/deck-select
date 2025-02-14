@@ -2,7 +2,8 @@
 	let { children } = $props();
 </script>
 
-
-<div class="min-h-screen flex flex-col items-center justify-center bg-background font-sans antialiased px-16">
+<div
+	class="flex min-h-screen flex-col items-center justify-center bg-background px-16 font-sans antialiased"
+>
 	{@render children()}
 </div>

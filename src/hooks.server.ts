@@ -1,87 +1,95 @@
-import { createServerClient } from '@supabase/ssr'
-import { type Handle, redirect } from '@sveltejs/kit'
-import { sequence } from '@sveltejs/kit/hooks'
+import { createServerClient } from '@supabase/ssr';
+import { type Handle, redirect } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import type { Database } from '$lib/types/database.types';
+import type { Session, User } from '@supabase/supabase-js';
 
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public'
+// Define the return type for safeGetSession
+interface SafeSession {
+  session: Session | null;
+  user: User | null;
+}
 
+// Supabase handler
 const supabase: Handle = async ({ event, resolve }) => {
-  /**
-   * Creates a Supabase client specific to this server request.
-   *
-   * The Supabase client gets the Auth token from the request cookies.
-   */
-  event.locals.supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
-    cookies: {
-      getAll: () => event.cookies.getAll(),
-      /**
-       * SvelteKit's cookies API requires `path` to be explicitly set in
-       * the cookie options. Setting `path` to `/` replicates previous/
-       * standard behavior.
-       */
-      setAll: (cookiesToSet) => {
-        cookiesToSet.forEach(({ name, value, options }) => {
-          event.cookies.set(name, value, { ...options, path: '/' })
-        })
-      },
-    },
-  })
+  event.locals.supabase = createServerClient<Database>(
+    PUBLIC_SUPABASE_URL,
+    PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        getAll: () => event.cookies.getAll(),
+        setAll: (cookiesToSet) => {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            event.cookies.set(name, value, { 
+              ...options, 
+              path: '/',
+              // Add secure options for production
+              secure: process.env.NODE_ENV === 'production',
+              sameSite: 'lax'
+            });
+          });
+        }
+      }
+    }
+  );
 
   /**
-   * Unlike `supabase.auth.getSession()`, which returns the session _without_
-   * validating the JWT, this function also calls `getUser()` to validate the
-   * JWT before returning the session.
+   * Enhanced session validation that checks both session and user JWT
    */
-  event.locals.safeGetSession = async () => {
+  event.locals.safeGetSession = async (): Promise<SafeSession> => {
     const {
       data: { session },
-    } = await event.locals.supabase.auth.getSession()
-    if (!session) {
-      return { session: null, user: null }
+      error: sessionError
+    } = await event.locals.supabase.auth.getSession();
+
+    if (sessionError || !session) {
+      return { session: null, user: null };
     }
 
     const {
       data: { user },
-      error,
-    } = await event.locals.supabase.auth.getUser()
-    if (error) {
-      // JWT validation has failed
-      return { session: null, user: null }
+      error: userError
+    } = await event.locals.supabase.auth.getUser();
+
+    if (userError) {
+      console.error('JWT validation failed:', userError);
+      return { session: null, user: null };
     }
 
-    return { session, user }
-  }
+    return { session, user };
+  };
 
   return resolve(event, {
     filterSerializedResponseHeaders(name) {
-      /**
-       * Supabase libraries use the `content-range` and `x-supabase-api-version`
-       * headers, so we need to tell SvelteKit to pass it through.
-       */
-      return name === 'content-range' || name === 'x-supabase-api-version'
-    },
-  })
-}
+      return name === 'content-range' || name === 'x-supabase-api-version';
+    }
+  });
+};
 
+// Auth guard handler
 const authGuard: Handle = async ({ event, resolve }) => {
-  const { session, user } = await event.locals.safeGetSession()
-  event.locals.session = session
-  event.locals.user = user
+  const { session, user } = await event.locals.safeGetSession();
+  event.locals.session = session;
+  event.locals.user = user;
 
-  // Check if current route is an auth route that isn't signout
-  const isAuthRoute = event.url.pathname.startsWith('/auth') && !event.url.pathname.endsWith('/signout')
-  const isAuthenticated = !!event.locals.session
+  const isAuthRoute = event.url.pathname.startsWith('/auth') && 
+                     !event.url.pathname.endsWith('/signout');
+  const isAuthenticated = !!session;
 
-  // If not an auth route and not authenticated, redirect to login
+  // Protected routes handling
   if (!isAuthRoute && !isAuthenticated) {
-    throw redirect(303, '/auth')
+    throw redirect(303, '/auth');
   }
 
-  // If authenticated and trying to access auth routes, redirect to home
+  // Prevent authenticated users from accessing auth routes
   if (isAuthenticated && isAuthRoute) {
-    throw redirect(303, '/')
+    throw redirect(303, '/');
   }
 
-  return resolve(event)
-}
+  return resolve(event);
+};
 
-export const handle: Handle = sequence(supabase, authGuard)
+export const handle: Handle = sequence(supabase, authGuard);
+
+// Type declarations for app-wide use

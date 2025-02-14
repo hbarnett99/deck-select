@@ -5,7 +5,10 @@ import { redirect } from '@sveltejs/kit';
 
 type SupabaseLocals = { locals: { supabase: SupabaseClient } };
 
-export const signInWithOAuth = async (provider: Provider, { locals: { supabase } }: SupabaseLocals) => {
+export const signInWithOAuth = async (
+	provider: Provider,
+	{ locals: { supabase } }: SupabaseLocals
+) => {
 	// console.log(`Initiating OAuth flow for ${provider}...`);
 
 	const { data, error } = await supabase.auth.signInWithOAuth({
@@ -41,5 +44,5 @@ export const signInWithOAuth = async (provider: Provider, { locals: { supabase }
 // Create a map of provider functions
 export const providers = {
 	discord: (event: RequestEvent) => signInWithOAuth('discord', event),
-	google: (event: RequestEvent) => signInWithOAuth('google', event),
+	google: (event: RequestEvent) => signInWithOAuth('google', event)
 } as const;

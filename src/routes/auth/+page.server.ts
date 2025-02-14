@@ -33,21 +33,21 @@ const handleCredentials = async (
 
 export const actions: Actions = {
 	signup: async (event) => {
-		const { request, locals: { supabase } } = event;
-		return handleCredentials(
-			(data) => supabase.auth.signUp(data),
-			request
-		);
+		const {
+			request,
+			locals: { supabase }
+		} = event;
+		return handleCredentials((data) => supabase.auth.signUp(data), request);
 	},
 
 	login: async (event) => {
-		const { request, locals: { supabase } } = event;
-		return handleCredentials(
-			(data) => supabase.auth.signInWithPassword(data),
-			request
-		);
+		const {
+			request,
+			locals: { supabase }
+		} = event;
+		return handleCredentials((data) => supabase.auth.signInWithPassword(data), request);
 	},
 
 	oauthDiscord: async (event) => providers.discord(event),
-	oauthGoogle: async (event) => providers.google(event),
+	oauthGoogle: async (event) => providers.google(event)
 };

@@ -20,22 +20,26 @@
 	const logSession = () => console.log(session);
 </script>
 
-<div class="min-h-screen bg-background font-sans antialiased px-16">
+<!-- Add flex flex-col to the outer div to create a column flex container -->
+<div class="flex min-h-screen flex-col bg-background px-16 font-sans antialiased">
 	{#if session}
 		<header>
 			<nav class="flex items-center justify-between py-4">
-				<Button onclick={logSession}>Log Session</Button>
-				<a href="/" class="text-lg font-bold">Henry's Site</a>
-				{#if session}
-					<a href="/profile" class="text-blue-500">Profile</a>
-					<a href="/auth/signout" class="text-blue-500">Sign Out</a>
-				{:else}
-					<a href="/auth" class="text-blue-500">Login</a>
-				{/if}
+				<a href="/" class="text-lg font-bold">Deck Select</a>
+				<span class="space-x-4">
+					<Button onclick={logSession}>Log Session</Button>
+					{#if session}
+						<a href="/profile" class="text-blue-500">Profile</a>
+						<a href="/auth/signout" class="text-blue-500">Sign Out</a>
+					{:else}
+						<a href="/auth" class="text-blue-500">Login</a>
+					{/if}
+				</span>
 			</nav>
 		</header>
 	{/if}
-	<main class="flex flex-col items-center justify-center flex-1">
+	<!-- Add flex-1 to make main fill remaining space -->
+	<main class="flex flex-1 flex-col items-center justify-center pb-8 pt-2">
 		{@render children()}
 	</main>
 </div>
