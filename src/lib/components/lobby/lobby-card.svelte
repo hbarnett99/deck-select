@@ -3,31 +3,43 @@
 	import { Card } from '../ui/card';
 	import { Crown } from 'lucide-svelte';
 	import * as Tooltip from '../ui/tooltip';
+	import * as Avatar from '../ui/avatar';
 
-	const players = [
-		{ name: 'Henry', isHost: true },
+	const players = $state([
 		{ name: 'Eddie', isHost: false },
+		{ name: 'Henry', isHost: true },
 		{ name: 'Marty', isHost: false }
-	];
+	]);
+
+	const orderedPlayers = $derived(
+		players.toSorted((p1, p2) => Number(p2.isHost) - Number(p1.isHost))
+	);
 </script>
 
 <Button variant="outline" class="grid h-fit grid-cols-3 items-center gap-4 p-2">
 	<div class="col-span-2">Lobby Card</div>
 	<div class="col-span-1 grid grid-cols-1 gap-2">
-		{#each players as player}
-			<Card class="inline-flex items-center justify-center gap-2 p-4">
+		{#each orderedPlayers as player}
+			<Card class="inline-flex items-center gap-2 p-4">
+				<Avatar.Root class='mr-1'>
+					<Avatar.Image src="" />
+					<Avatar.Fallback></Avatar.Fallback>
+				</Avatar.Root>
 				{player.name}
 				{#if player.isHost}
-					<Tooltip.Provider delayDuration={0}>
+					<Crown class="fill-yellow-400 stroke-yellow-400" />
+
+					<!-- <Tooltip.Provider delayDuration={0}>
 						<Tooltip.Root>
 							<Tooltip.Trigger>
-								<Crown class="stroke-yellow-400 fill-yellow-400" />
+								<Crown class="fill-yellow-400 stroke-yellow-400" />
 							</Tooltip.Trigger>
 							<Tooltip.Content side="right">
 								<p>Host</p>
 							</Tooltip.Content>
 						</Tooltip.Root>
-					</Tooltip.Provider>
+					</Tooltip.Provider> -->
+
 				{/if}
 			</Card>
 		{/each}

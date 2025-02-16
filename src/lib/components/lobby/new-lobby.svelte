@@ -4,7 +4,19 @@
 	import { Input } from '../ui/input';
 	import { Label } from '../ui/label';
 	import { Switch } from '../ui/switch';
-	import { lobbyDialogActions, lobbyDialogState } from './lobby';
+
+	export const lobbyDialogState = $state({
+		createDialogOpen: false
+	});
+	export const lobbyDialogActions = $state({
+		openNewLobbyDialog: () => {
+			lobbyDialogState.createDialogOpen = true;
+		},
+		openCloseLobbyDialog: () => {
+			lobbyDialogState.createDialogOpen = false;
+		},
+		handleCreateLobby: async () => {}
+	});
 
 	const lobbyForm = $state({
 		newLobbyName: '',
@@ -38,7 +50,9 @@
 			</div>
 
 			<Dialog.Footer>
-				<Button variant="outline" onclick={() => (lobbyDialogState.createDialogOpen = false)}>Cancel</Button>
+				<Button variant="outline" onclick={() => (lobbyDialogState.createDialogOpen = false)}
+					>Cancel</Button
+				>
 				<Button type="submit">Create Lobby</Button>
 			</Dialog.Footer>
 		</form>
