@@ -55,6 +55,7 @@
 		"zod": "^3.24.1"
 	},
 	"dependencies": {
+		"@scryfall/api-types": "^1.0.0-alpha.4",
 		"@supabase/ssr": "^0.5.2",
 		"@supabase/supabase-js": "^2.48.1",
 		"date-fns": "^4.1.0",

@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+	import { Plus } from 'lucide-svelte';
 	import { Button } from '../ui/button';
 	import * as Dialog from '../ui/dialog';
 	import { Input } from '../ui/input';
@@ -8,15 +9,15 @@
 	export const lobbyDialogState = $state({
 		createDialogOpen: false
 	});
-	export const lobbyDialogActions = $state({
-		openNewLobbyDialog: () => {
+	export const lobbyDialogActions = {
+		openCreateDialog: () => {
 			lobbyDialogState.createDialogOpen = true;
 		},
-		openCloseLobbyDialog: () => {
+		closeCreateDialog: () => {
 			lobbyDialogState.createDialogOpen = false;
 		},
-		handleCreateLobby: async () => {}
-	});
+		handleCreateLobby: async (newLobby: any) => {}
+	};
 
 	const lobbyForm = $state({
 		newLobbyName: '',

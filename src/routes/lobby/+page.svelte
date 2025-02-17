@@ -1,5 +1,6 @@
-<script>
+<script lang="ts">
 	import LobbyCard from '$lib/components/lobby/lobby-card.svelte';
+	import NewLobby from '$lib/components/lobby/new-lobby.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Card from '$lib/components/ui/card/card.svelte';
 	import Input from '$lib/components/ui/input/input.svelte';
@@ -13,7 +14,25 @@
 
 	$inspect({ currentLobby, isHost });
 
-	const lobbies = [1, 1, 1, 1, 1,];
+	const lobbies = [1, 1, 1, 1, 1];
+
+	let isDialogOpen = $state(false);
+
+	const handleOpen = () => {
+		isDialogOpen = true;
+	};
+
+	const handleCreateLobby = (data) => {
+		// Handle lobby creation logic here
+		console.log('Creating lobby:', data);
+		isDialogOpen = false;
+	};
+
+	const handleClose = () => {
+		isDialogOpen = false;
+	};
+
+	let dialog: NewLobby;
 </script>
 
 <Card class="grid h-[calc(100vh-108px)] w-full grid-cols-[1fr_auto_1fr] gap-4 p-4">
@@ -25,7 +44,7 @@
 			<Tooltip.Provider delayDuration={0} disabled={!isHost}>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
-						<Button variant="secondary" size="icon" disabled={!isHost}>
+						<Button onclick={handleOpen} variant="secondary" size="icon" disabled={!isHost}>
 							<Settings />
 						</Button>
 					</Tooltip.Trigger>
@@ -36,9 +55,9 @@
 			</Tooltip.Provider>
 		</Card>
 		{#if !currentLobby}
-			<div class="flex h-full items-center justify-center p-2">
+			<div class="flex h-full items-center justify-center p-2 space-x-4">
 				<p class="italic text-gray-500">You are not in a lobby.</p>
-				<Button class="ml-4">
+				<Button onclick={() => dialog.lobbyDialogActions.openCreateDialog()}>
 					<Plus />
 					New Lobby
 				</Button>
@@ -66,3 +85,5 @@
 		</div>
 	</div>
 </Card>
+
+<NewLobby bind:this={dialog} />

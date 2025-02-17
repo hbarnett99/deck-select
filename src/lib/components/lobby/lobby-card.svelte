@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { Button } from '../ui/button';
 	import { Card } from '../ui/card';
 	import { Crown } from 'lucide-svelte';
