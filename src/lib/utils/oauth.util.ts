@@ -1,4 +1,5 @@
 // oauth.util.ts
+import { PUBLIC_DISCORD_REDIRECT_URI } from '$env/static/public';
 import type { Provider, SupabaseClient } from '@supabase/supabase-js';
 import type { RequestEvent } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
@@ -14,7 +15,7 @@ export const signInWithOAuth = async (
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider,
 		options: {
-			redirectTo: 'http://localhost:5173/auth/callback',
+			redirectTo: PUBLIC_DISCORD_REDIRECT_URI,
 			scopes: provider === 'discord' ? 'identify email' : undefined
 		}
 	});
