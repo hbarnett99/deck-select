@@ -51,9 +51,9 @@
 			</div>
 
 			<Dialog.Footer>
-				<Button variant="outline" onclick={() => (lobbyDialogState.createDialogOpen = false)}
-					>Cancel</Button
-				>
+				<Button variant="outline" onclick={() => (lobbyDialogState.createDialogOpen = false)}>
+					Cancel
+				</Button>
 				<Button type="submit">Create Lobby</Button>
 			</Dialog.Footer>
 		</form>

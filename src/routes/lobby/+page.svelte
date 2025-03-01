@@ -9,7 +9,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { Plus, Scroll, Settings } from 'lucide-svelte';
 
-	const currentLobby = $state(null);
+	const currentLobby = $state<any>(null);
 	const isHost = $derived(currentLobby?.isHost);
 
 	$inspect({ currentLobby, isHost });
@@ -20,16 +20,6 @@
 
 	const handleOpen = () => {
 		isDialogOpen = true;
-	};
-
-	const handleCreateLobby = (data) => {
-		// Handle lobby creation logic here
-		console.log('Creating lobby:', data);
-		isDialogOpen = false;
-	};
-
-	const handleClose = () => {
-		isDialogOpen = false;
 	};
 
 	let dialog: NewLobby;

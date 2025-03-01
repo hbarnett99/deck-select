@@ -3,6 +3,7 @@
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { Separator } from '$lib/components/ui/separator';
 
 	let { data, children } = $props();
 	let { session, supabase } = $derived(data);
@@ -20,14 +21,21 @@
 	const logSession = () => console.log(session);
 </script>
 
-<!-- Add flex flex-col to the outer div to create a column flex container -->
 <div class="flex min-h-screen flex-col bg-background px-16 font-sans antialiased">
 	{#if session}
 		<header>
 			<nav class="flex items-center justify-between py-4">
-				<a href="/" class="text-lg font-bold">Deck Select</a>
 				<span class="space-x-4">
-					<Button onclick={logSession}>Log Session</Button>
+					<Button variant='ghost' href="/" class="text-lg">Deck Select</Button>
+					<!-- <Separator orientation="vertical" /> -->
+					<Button variant='ghost' href="/lobby" class="text-lg">Lobbies</Button>
+					<Button variant='ghost' href="/commandzone" class="text-lg">Command Zone</Button>
+					<Button variant='ghost' href="/statistics" class="text-lg">Statistics</Button>
+					<Button variant='ghost' href="/admin" class="text-lg">Admin</Button>
+				</span>
+				<span class="space-x-4">
+					<Button variant="ghost" onclick={logSession}>Log Session</Button>
+
 					{#if session}
 						<a href="/profile" class="text-blue-500">Profile</a>
 						<a href="/auth/signout" class="text-blue-500">Sign Out</a>
