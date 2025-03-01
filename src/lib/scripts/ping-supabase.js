@@ -1,5 +1,5 @@
 // scripts/ping-supabase.js
-const { createClient } = require('@supabase/supabase-js');
+import { createClient } from '@supabase/supabase-js';
 
 // This script is designed to run in GitHub Actions, not as part of the SvelteKit app
 // It uses process.env because it runs in Node.js directly, not in the SvelteKit context
