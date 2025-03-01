@@ -7,10 +7,14 @@ async function pingDatabase() {
 	try {
 		// Initialize Supabase client with environment variables
 		// For GitHub Actions, we use process.env directly
-		const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_KEY
-    );
+	const supabaseUrl = process.env.SUPABASE_URL;
+	const supabaseKey = process.env.SUPABASE_KEY;
+
+	if (!supabaseUrl || !supabaseKey) {
+		throw new Error('Missing Supabase URL or Key in environment variables');
+	}
+
+	const supabase = createClient(supabaseUrl, supabaseKey);
 
 		console.log('Pinging Supabase at:', new Date().toISOString());
 
