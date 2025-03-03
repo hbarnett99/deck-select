@@ -41,7 +41,7 @@
 </script>
 
 <h1>Command Zone</h1>
-<Button variant="outline" onclick={handleOpen}>Search Commanders</Button>
+<Button variant="outline" onclick={() => dialog.commandSearchDialogActions.openSearchDialog()}>Search Commanders</Button>
 <Card class="flex w-full flex-grow flex-col space-y-2 p-4">
 	<form class="flex space-x-2">
 		<!-- <Label>Commander Search</Label> -->

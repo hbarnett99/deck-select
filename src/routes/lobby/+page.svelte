@@ -1,5 +1,6 @@
 <script lang="ts">
 	import LobbyCard from '$lib/components/lobby/lobby-card.svelte';
+	import LobbySettings from '$lib/components/lobby/lobby-settings.svelte';
 	import NewLobby from '$lib/components/lobby/new-lobby.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Card from '$lib/components/ui/card/card.svelte';
@@ -16,13 +17,8 @@
 
 	const lobbies = [1, 1, 1, 1, 1];
 
-	let isDialogOpen = $state(false);
-
-	const handleOpen = () => {
-		isDialogOpen = true;
-	};
-
-	let dialog: NewLobby;
+	let newLobbydialog: NewLobby;
+	let newSettingsDialog: LobbySettings;
 </script>
 
 <Card class="grid h-[calc(100vh-108px)] w-full grid-cols-[1fr_auto_1fr] gap-4 p-4">
@@ -34,7 +30,12 @@
 			<Tooltip.Provider delayDuration={0} disabled={!isHost}>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
-						<Button onclick={handleOpen} variant="secondary" size="icon" disabled={!isHost}>
+						<Button
+							onclick={() => newSettingsDialog.lobbySettingsDialogActions.openCreateDialog()}
+							variant="secondary"
+							size="icon"
+							disabled={!isHost}
+						>
 							<Settings />
 						</Button>
 					</Tooltip.Trigger>
@@ -45,9 +46,9 @@
 			</Tooltip.Provider>
 		</Card>
 		{#if !currentLobby}
-			<div class="flex h-full items-center justify-center p-2 space-x-4">
+			<div class="flex h-full items-center justify-center space-x-4 p-2">
 				<p class="italic text-gray-500">You are not in a lobby.</p>
-				<Button onclick={() => dialog.lobbyDialogActions.openCreateDialog()}>
+				<Button onclick={() => newLobbydialog.lobbyDialogActions.openCreateDialog()}>
 					<Plus />
 					New Lobby
 				</Button>
@@ -76,4 +77,6 @@
 	</div>
 </Card>
 
-<NewLobby bind:this={dialog} />
+<NewLobby bind:this={newLobbydialog} />
+
+<LobbySettings bind:this={newSettingsDialog} />
