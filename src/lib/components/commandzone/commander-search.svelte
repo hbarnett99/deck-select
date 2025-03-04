@@ -57,9 +57,9 @@
 				Create a new lobby for players to join. Set a name and choose if it's a practice mode lobby.
 			</Dialog.Description>
 		</Dialog.Header>
-		<Card class="space-y-2 overflow-scroll p-4">
-			<form class="grid grid-cols-1 gap-2">
-				<!-- <Label>Commander Search</Label> -->
+		<form>
+			<!-- <Label>Commander Search</Label> -->
+			<Card class="grid grid-cols-1 gap-2 p-4">
 				<Input type="text" placeholder="Search for a commander" bind:value={form.search} />
 				<ScrollArea class="h-72">
 					{#if searching}
@@ -106,16 +106,16 @@
 						</div>
 					{/if}
 				</ScrollArea>
-				<Dialog.Footer>
-					<Button
-						variant="outline"
-						onclick={() => (commandSearchDialogState.searchDialogOpen = false)}
-					>
-						Cancel
-					</Button>
-					<Button type="submit">Add Commander</Button>
-				</Dialog.Footer>
-			</form>
-		</Card>
+			</Card>
+			<Dialog.Footer>
+				<Button
+					variant="outline"
+					onclick={() => (commandSearchDialogState.searchDialogOpen = false)}
+				>
+					Cancel
+				</Button>
+				<Button type="submit">Add Commander</Button>
+			</Dialog.Footer>
+		</form>
 	</Dialog.Content>
 </Dialog.Root>

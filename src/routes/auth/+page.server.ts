@@ -49,5 +49,12 @@ export const actions: Actions = {
 	},
 
 	oauthDiscord: async (event) => providers.discord(event),
-	oauthGoogle: async (event) => providers.google(event)
+	oauthGoogle: async (event) => providers.google(event),
+
+	checkAuth: async (event) => {
+		const { locals } = event;
+		const user = (await locals.supabase.auth.getSession()).data.session;
+
+		console.log('User session:', user);
+	}
 };

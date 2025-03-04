@@ -16,7 +16,10 @@
 			Login with Discord
 		</Button>
 	</form>
-	<form action="?/oauthGoogle" method="POST" class="w-full">
+	<!-- <form action="?/oauthGoogle" method="POST" class="w-full">
 		<Button type="submit" class="w-full">Login with Google</Button>
+	</form> -->
+	<form action="?/checkAuth" method="POST" class="w-full">
+		<Button type="submit" class="w-full">Check Auth</Button>
 	</form>
 </Card>
