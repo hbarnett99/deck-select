@@ -7,27 +7,33 @@ async function pingDatabase() {
 	try {
 		// Initialize Supabase client with environment variables
 		// For GitHub Actions, we use process.env directly
-	const supabaseUrl = process.env.SUPABASE_URL;
-	const supabaseKey = process.env.SUPABASE_KEY;
+		const supabaseUrl = process.env.SUPABASE_URL;
+		const supabaseKey = process.env.SUPABASE_KEY;
 
-	if (!supabaseUrl || !supabaseKey) {
-		throw new Error('Missing Supabase URL or Key in environment variables');
-	}
+		if (!supabaseUrl || !supabaseKey) {
+			throw new Error('Missing Supabase URL or Key in environment variables');
+		}
 
-	const supabase = createClient(supabaseUrl, supabaseKey);
+		const supabase = createClient(supabaseUrl, supabaseKey);
 
 		console.log('Pinging Supabase at:', new Date().toISOString());
 
 		// Simple query to ping the database - replace 'your_table_name' with an actual table
+		// const { data, error } = await supabase
+		// 	.from('ping')
+		// 	.select('*', { count: 'exact' }) // Use '*' to select all rows
+		// 	.limit(1); // Limit to 1 row
+
+		// Simple query to ping the database - replace 'your_table_name' with an actual table
 		const { data, error } = await supabase
 			.from('ping')
-			.select('*', { count: 'exact' }) // Use '*' to select all rows
-			.limit(1); // Limit to 1 row
+			.update({ last_pinged_at: new Date().toISOString() })
+			.match({ id: 1 });
 
 		if (error) {
 			console.error('Error pinging database:', error);
 		} else {
-			console.log('Successfully pinged DB'); 
+			console.log('Successfully pinged DB');
 		}
 
 		console.log('Ping successful! Database is active.');
