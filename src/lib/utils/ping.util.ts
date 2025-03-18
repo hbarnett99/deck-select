@@ -1,3 +1,4 @@
+// src/lib/utils/ping.util.ts
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export async function pingDatabase(supabase: SupabaseClient) {
@@ -6,30 +7,22 @@ export async function pingDatabase(supabase: SupabaseClient) {
     try {
         console.log('Pinging Supabase at:', pingDateTime);
 
-        // Simple query to ping the database - replace 'your_table_name' with an actual table
-        // const { data, error } = await supabase
-        // 	.from('ping')
-        // 	.select('*', { count: 'exact' }) // Use '*' to select all rows
-        // 	.limit(1); // Limit to 1 row
-
-        // Simple query to ping the database - replace 'your_table_name' with an actual table
+        // Update the ping record
         const { data, error } = await supabase
             .from('ping')
             .update({ last_pinged_at: pingDateTime })
-            .match({ id: 1 });
-
-        console.log('Ping response:', data);
+            .eq('id', 1)
+            .select(); // Add this to return the updated data
 
         if (error) {
             console.error('Error pinging database:', error);
+            throw error; // Important: throw the error to be caught by the caller
         } else {
-            console.log('Successfully pinged DB');
-            console.log('Ping successful! Database is active.');
-            console.log('Timestamp:', pingDateTime);
+            console.log('Successfully pinged DB, response:', data);
+            return data;
         }
-
     } catch (err) {
         console.error('Unexpected error:', err);
-        process.exit(1);
+        throw err; // Re-throw the error to be caught by the caller
     }
 }
