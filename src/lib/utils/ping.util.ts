@@ -1,5 +1,6 @@
 // src/lib/utils/ping.util.ts
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { da } from "date-fns/locale";
 
 export async function pingDatabase(supabase: SupabaseClient) {
     const pingDateTime = new Date().toISOString();
