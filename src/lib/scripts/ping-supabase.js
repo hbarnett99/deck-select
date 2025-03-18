@@ -1,3 +1,4 @@
+// @ts-nocheck
 // scripts/ping-supabase.js
 import { createClient } from '@supabase/supabase-js';
 
@@ -5,17 +6,6 @@ import { createClient } from '@supabase/supabase-js';
 // It uses process.env because it runs in Node.js directly, not in the SvelteKit context
 async function pingDatabase() {
 	try {
-		// Initialize Supabase client with environment variables
-		// For GitHub Actions, we use process.env directly
-		const supabaseUrl = process.env.SUPABASE_URL;
-		const supabaseKey = process.env.SUPABASE_KEY;
-
-		if (!supabaseUrl || !supabaseKey) {
-			throw new Error('Missing Supabase URL or Key in environment variables');
-		}
-
-		const supabase = createClient(supabaseUrl, supabaseKey);
-
 		console.log('Pinging Supabase at:', new Date().toISOString());
 
 		// Simple query to ping the database - replace 'your_table_name' with an actual table

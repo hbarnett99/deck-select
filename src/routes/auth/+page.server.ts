@@ -1,7 +1,5 @@
-// +page.server.ts
-import type { Actions } from './$types';
-import { providers } from '$lib/utils/oauth.util';
-import { redirect } from '@sveltejs/kit';
+import { redirect, type Actions } from '@sveltejs/kit';
+import { providers } from '../../lib/utils/oauth.util';
 
 interface AuthFormData {
 	email: string;
