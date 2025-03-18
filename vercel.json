@@ -2,7 +2,8 @@
 	"crons": [
 		{
 			"path": "/api/ping",
-			"schedule": "0 14 * * *"
+			"schedule": "0 14 * * *",
+			"httpMethod": "POST"
 		}
 	]
 }

@@ -2,7 +2,7 @@
 import { pingDatabase } from '$lib/utils/ping.util';
 import { json } from '@sveltejs/kit';
 
-export async function GET({ locals: { supabase } }) {
+export async function POST({ locals: { supabase } }) {
     console.log('Starting ping operation');
     
     try {
@@ -13,7 +13,6 @@ export async function GET({ locals: { supabase } }) {
         return json({
             success: true,
             message: 'Ping successful!',
-            timestamp: new Date().toISOString(),
             data: result
         });
     } catch (error) {
