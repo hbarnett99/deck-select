@@ -1,8 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export async function pingDatabase(supabase: SupabaseClient) {
+    const pingDateTime = new Date().toISOString();
+
     try {
-        console.log('Pinging Supabase at:', new Date().toISOString());
+        console.log('Pinging Supabase at:', pingDateTime);
 
         // Simple query to ping the database - replace 'your_table_name' with an actual table
         // const { data, error } = await supabase
@@ -13,17 +15,19 @@ export async function pingDatabase(supabase: SupabaseClient) {
         // Simple query to ping the database - replace 'your_table_name' with an actual table
         const { data, error } = await supabase
             .from('ping')
-            .update({ last_pinged_at: new Date().toISOString() })
+            .update({ last_pinged_at: pingDateTime })
             .match({ id: 1 });
+
+        console.log('Ping response:', data);
 
         if (error) {
             console.error('Error pinging database:', error);
         } else {
             console.log('Successfully pinged DB');
+            console.log('Ping successful! Database is active.');
+            console.log('Timestamp:', pingDateTime);
         }
 
-        console.log('Ping successful! Database is active.');
-        console.log('Timestamp:', new Date().toISOString());
     } catch (err) {
         console.error('Unexpected error:', err);
         process.exit(1);
