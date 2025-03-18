@@ -8,7 +8,8 @@ import { pingDatabase } from '$lib/utils/ping.util';
 // 	return;
 // };
 
-export async function POST({ locals: { supabase } }) {
+// Vercel Serverless Functions require the keyword GET, however this also posts.
+export async function GET({ locals: { supabase } }) {
 	console.log('Loading ping page');
 	let response = 'No response';
 	pingDatabase(supabase)
