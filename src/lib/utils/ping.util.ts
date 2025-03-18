@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { da } from "date-fns/locale";
 
 export async function pingDatabase(supabase: SupabaseClient) {
     const pingDateTime = new Date().toISOString();
@@ -22,10 +23,12 @@ export async function pingDatabase(supabase: SupabaseClient) {
 
         if (error) {
             console.error('Error pinging database:', error);
+            return data;
         } else {
             console.log('Successfully pinged DB');
             console.log('Ping successful! Database is active.');
             console.log('Timestamp:', pingDateTime);
+            return error;
         }
 
     } catch (err) {
