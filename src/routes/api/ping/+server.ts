@@ -1,25 +1,22 @@
+// src/routes/api/ping/+server.ts
 import { pingDatabase } from '$lib/utils/ping.util';
 
-// export const load = async ({ locals: { supabase } }) => {
-// 	console.log('Loading ping page');
-// 	pingDatabase(supabase)
-// 		.then(() => console.log('Ping successful!'))
-// 		.catch(() => console.error('Ping failed!'));
-// 	return;
-// };
-
-// Vercel Serverless Functions require the keyword GET, however this also posts.
 export async function GET({ locals: { supabase } }) {
-	console.log('Loading ping page');
-	let response = 'No response';
-	pingDatabase(supabase)
-		.then(() => {
-			console.log('Ping successful!');
-			response = 'Ping successful!';
-		})
-		.catch(() => {
-			console.error('Ping failed!');
-			response = 'Ping failed!';
-		});
-	return new Response(response);
+  console.log('Loading ping page');
+  
+  try {
+    // Await the promise completion before sending a response
+    await pingDatabase(supabase);
+    console.log('Ping successful!');
+    return new Response('Ping successful!', {
+      status: 200,
+      headers: { 'Content-Type': 'text/plain' }
+    });
+  } catch (error) {
+    console.error('Ping failed!', error);
+    return new Response('Ping failed: ' + (error instanceof Error ? error.message : String(error)), {
+      status: 500,
+      headers: { 'Content-Type': 'text/plain' }
+    });
+  }
 }
