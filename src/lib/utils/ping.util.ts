@@ -8,18 +8,12 @@ export async function pingDatabase(supabase: SupabaseClient) {
 		console.log('Pinging Supabase at:', pingDateTime);
 
 		// Update the ping record
-		const { data, error } = await supabase
+        const { data, error } = await supabase
 			.from('ping')
 			.update({ last_pinged_at: pingDateTime })
 			.eq('id', 1)
-			.select('*')
-			.single(); // Add this to return the updated data
-
-        // const { data, error } = await supabase
-        //     .from('ping')
-        //     .select('*')
-        //     .eq('id', 1)
-        //     .single(); // This will return the row with id 1 if it exists
+			.select()
+			.single();
 
 		if (error) {
 			throw error; // Important: throw the error to be caught by the caller

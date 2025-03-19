@@ -1,15 +1,23 @@
 // src/routes/api/ping/+server.ts
+import { CRON_SECRET } from '$env/static/private';
 import { pingDatabase } from '$lib/utils/ping.util';
 import { json } from '@sveltejs/kit';
 
-export async function POST({ locals: { supabase } }) {
+export async function GET({ locals: { supabase }, request }) {
+    const authHeader = request.headers.get('authorization');
+    if (authHeader !== `Bearer ${CRON_SECRET}`) {
+        return new Response('Unauthorized', {
+            status: 401,
+        });
+    }
+
     console.log('Starting ping operation');
-    
+
     try {
         const result = await pingDatabase(supabase);
-        
+
         console.log('Ping successful with result:', result);
-        
+
         return json({
             success: true,
             message: 'Ping successful!',
@@ -17,7 +25,7 @@ export async function POST({ locals: { supabase } }) {
         });
     } catch (error) {
         console.error('Ping failed:', error);
-        
+
         return json({
             success: false,
             message: 'Ping failed',
