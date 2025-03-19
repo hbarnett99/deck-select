@@ -8,7 +8,7 @@ export async function pingDatabase(supabase: SupabaseClient) {
 		console.log('Pinging Supabase at:', pingDateTime);
 
 		// Update the ping record
-        const { data, error } = await supabase
+		const { data, error } = await supabase
 			.from('ping')
 			.update({ last_pinged_at: pingDateTime })
 			.eq('id', 1)
@@ -16,11 +16,9 @@ export async function pingDatabase(supabase: SupabaseClient) {
 			.single();
 
 		if (error) {
-			throw error; // Important: throw the error to be caught by the caller
-		} else {
-			console.log('Successfully pinged DB, response:', data);
-			return data;
+			throw error;
 		}
+
 	} catch (err) {
 		throw err; // Re-throw the error to be caught by the caller
 	}

@@ -16,7 +16,7 @@ export async function GET({ locals: { supabase }, request }) {
     try {
         const result = await pingDatabase(supabase);
 
-        console.log('Ping successful with result:', result);
+        console.log('Successfully pinged DB, response:', result);
 
         return json({
             success: true,
