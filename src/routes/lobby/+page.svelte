@@ -1,7 +1,5 @@
 <script lang="ts">
-	import LobbyCard from '$lib/components/lobby/lobby-card.svelte';
-	import LobbySettings from '$lib/components/lobby/lobby-settings.svelte';
-	import NewLobby from '$lib/components/lobby/new-lobby.svelte';
+	import LobbyCard from './lobby-card.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Card from '$lib/components/ui/card/card.svelte';
 	import Input from '$lib/components/ui/input/input.svelte';
@@ -9,6 +7,8 @@
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { Plus, Scroll, Settings } from 'lucide-svelte';
+	import NewLobby from './new-lobby.svelte';
+	import LobbySettings from './lobby-settings.svelte';
 
 	const currentLobby = $state<any>(null);
 	const isHost = $derived(currentLobby?.isHost);
@@ -21,7 +21,7 @@
 	let newSettingsDialog: LobbySettings;
 </script>
 
-<Card class="grid h-[calc(100vh-108px)] w-full grid-cols-[1fr_auto_1fr] gap-4 p-4">
+<Card class="grid w-full grid-cols-[1fr_auto_1fr] gap-4 p-4">
 	<div>
 		<Card class="flex flex-1 items-center justify-between gap-4 p-2 pl-4">
 			<p>a</p>

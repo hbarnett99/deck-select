@@ -6,12 +6,17 @@
 	import ScryfallService from '$lib/utils/scryfall.util';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import type { ScryfallCard } from '@scryfall/api-types';
-	import ScrollArea from '../ui/scroll-area/scroll-area.svelte';
+	import ScrollArea from '../../lib/components/ui/scroll-area/scroll-area.svelte';
+	import * as ToggleGroup from '../../lib/components/ui/toggle-group/index';
+	import { LoaderCircle } from 'lucide-svelte';
+	// import LoaderCircle from "@lucide/svelte/icons/loader-circle";
 
 	let form = $state({ search: '' });
 	let searchResults = $state<ScryfallCard.Normal[]>();
 	let timeout: NodeJS.Timeout;
 	let searching = $state(false);
+	let selectedCommander = $state(undefined);
+	let isAdding = $state(false);
 	$inspect({ searchResults });
 
 	export const commandSearchDialogState = $state({
@@ -26,7 +31,9 @@
 			searchResults = [];
 			commandSearchDialogState.searchDialogOpen = false;
 		},
-		handleAddCommander: async (commander: any) => {}
+		handleAddCommander: async (commander: any) => {
+			isAdding = true;
+		}
 	};
 
 	function handleSearch(search: string) {
@@ -52,14 +59,15 @@
 <Dialog.Root bind:open={commandSearchDialogState.searchDialogOpen}>
 	<Dialog.Content class="sm:max-w-[800px]">
 		<Dialog.Header>
-			<Dialog.Title>Create New Lobby</Dialog.Title>
+			<Dialog.Title>Commander Search</Dialog.Title>
 			<Dialog.Description>
-				Create a new lobby for players to join. Set a name and choose if it's a practice mode lobby.
+				Search for a commander to add to the Commander Pool. All valid Scryfall searches are
+				supported.
 			</Dialog.Description>
 		</Dialog.Header>
-		<form>
+		<form action='?/add' method="POST" onsubmit={commandSearchDialogActions.handleAddCommander}>
 			<!-- <Label>Commander Search</Label> -->
-			<Card class="grid grid-cols-1 gap-2 p-4">
+			<div class="grid grid-cols-1 gap-2">
 				<Input type="text" placeholder="Search for a commander" bind:value={form.search} />
 				<ScrollArea class="h-72">
 					{#if searching}
@@ -71,11 +79,11 @@
 							<Skeleton class="h-16" />
 						</div>
 					{:else if (searchResults ?? []).length > 0}
-						<div class="my-2 space-y-2">
+						<ToggleGroup.Root type="single" class="my-2 grid grid-cols-1 gap-2" bind:value={selectedCommander}>
 							{#each searchResults! as card}
-								<Button
-									variant="ghost"
+								<ToggleGroup.Item
 									class="flex h-16 w-full flex-grow items-center justify-between p-2"
+									value={card.name}
 								>
 									<div class="flex items-center space-x-3">
 										<!-- Image with fixed dimensions and proper scaling -->
@@ -92,10 +100,12 @@
 											<span class="text-xs italic text-muted-foreground">{card.set_name}</span>
 										</div>
 									</div>
-									<p class="text-muted-foreground">${card.prices.usd}</p>
-								</Button>
+									<p class="text-muted-foreground">
+										{card?.prices?.usd ? `$${card.prices.usd}` : '-'}
+									</p>
+								</ToggleGroup.Item>
 							{/each}
-						</div>
+						</ToggleGroup.Root>
 					{:else if form.search.length > 2}
 						<div class="flex h-full flex-grow items-center justify-center">
 							<p class="flex flex-grow text-muted-foreground">No results found</p>
@@ -106,15 +116,21 @@
 						</div>
 					{/if}
 				</ScrollArea>
-			</Card>
-			<Dialog.Footer>
+			</div>
+			<Dialog.Footer class="mt-2">
 				<Button
 					variant="outline"
 					onclick={() => (commandSearchDialogState.searchDialogOpen = false)}
 				>
 					Cancel
 				</Button>
-				<Button type="submit">Add Commander</Button>
+				<Button type="submit" class='w-[137px]' disabled={!selectedCommander || isAdding}>
+					{#if isAdding}
+						<LoaderCircle class="animate-spin" />
+					{:else}
+						Add Commander
+					{/if}					
+				</Button>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>

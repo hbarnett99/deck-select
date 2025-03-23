@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Button } from '../ui/button';
-	import { Card } from '../ui/card';
+	import { Button } from '../../lib/components/ui/button';
+	import { Card } from '../../lib/components/ui/card';
 	import { Crown } from 'lucide-svelte';
-	import * as Tooltip from '../ui/tooltip';
-	import * as Avatar from '../ui/avatar';
+	import * as Tooltip from '../../lib/components/ui/tooltip';
+	import * as Avatar from '../../lib/components/ui/avatar';
 
 	const players = $state([
 		{ name: 'Eddie', isHost: false },

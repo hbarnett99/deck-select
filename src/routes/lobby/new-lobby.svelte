@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { Button } from '$lib/components/ui/button';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
+	import { Switch } from '$lib/components/ui/switch';
 	import { Plus } from 'lucide-svelte';
-	import { Button } from '../ui/button';
-	import * as Dialog from '../ui/dialog';
-	import { Input } from '../ui/input';
-	import { Label } from '../ui/label';
-	import { Switch } from '../ui/switch';
 
 	export const lobbyDialogState = $state({
 		createDialogOpen: false

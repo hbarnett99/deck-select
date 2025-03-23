@@ -1,5 +1,6 @@
 <script>
-	import { Card } from "../ui/card";
+	import { Card } from "$lib/components/ui/card";
+
 
 </script>
 

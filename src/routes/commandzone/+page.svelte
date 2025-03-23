@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CommanderSearch from '$lib/components/commandzone/commander-search.svelte';
+	import CommanderSearch from './commander-search.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Card } from '$lib/components/ui/card';
 	import Input from '$lib/components/ui/input/input.svelte';
