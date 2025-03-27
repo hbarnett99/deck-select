@@ -65,7 +65,7 @@
 				supported.
 			</Dialog.Description>
 		</Dialog.Header>
-		<form action='?/add' method="POST" onsubmit={commandSearchDialogActions.handleAddCommander}>
+		<form action="?/add" method="POST" onsubmit={commandSearchDialogActions.handleAddCommander}>
 			<!-- <Label>Commander Search</Label> -->
 			<div class="grid grid-cols-1 gap-2">
 				<Input type="text" placeholder="Search for a commander" bind:value={form.search} />
@@ -79,7 +79,11 @@
 							<Skeleton class="h-16" />
 						</div>
 					{:else if (searchResults ?? []).length > 0}
-						<ToggleGroup.Root type="single" class="my-2 grid grid-cols-1 gap-2" bind:value={selectedCommander}>
+						<ToggleGroup.Root
+							type="single"
+							class="my-2 grid grid-cols-1 gap-2"
+							bind:value={selectedCommander}
+						>
 							{#each searchResults! as card}
 								<ToggleGroup.Item
 									class="flex h-16 w-full flex-grow items-center justify-between p-2"
@@ -108,11 +112,11 @@
 						</ToggleGroup.Root>
 					{:else if form.search.length > 2}
 						<div class="flex h-full flex-grow items-center justify-center">
-							<p class="flex flex-grow text-muted-foreground">No results found</p>
+							<p class="justify-center self-center text-muted-foreground">No results found.</p>
 						</div>
 					{:else}
 						<div class="flex h-full flex-grow items-center justify-center">
-							<p class="justify-center self-center text-muted-foreground">Search for a card</p>
+							<p class="justify-center self-center text-muted-foreground">Search for a card.</p>
 						</div>
 					{/if}
 				</ScrollArea>
@@ -124,12 +128,12 @@
 				>
 					Cancel
 				</Button>
-				<Button type="submit" class='w-[137px]' disabled={!selectedCommander || isAdding}>
+				<Button type="submit" class="w-[137px]" disabled={!selectedCommander || isAdding}>
 					{#if isAdding}
 						<LoaderCircle class="animate-spin" />
 					{:else}
 						Add Commander
-					{/if}					
+					{/if}
 				</Button>
 			</Dialog.Footer>
 		</form>
