@@ -47,7 +47,7 @@
 		</Card>
 		{#if !currentLobby}
 			<div class="flex h-full items-center justify-center space-x-4 p-2">
-				<p class="italic text-gray-500">You are not in a lobby.</p>
+				<p class="text-gray-500 italic">You are not in a lobby.</p>
 				<Button onclick={() => newLobbydialog.lobbyDialogActions.openCreateDialog()}>
 					<Plus />
 					New Lobby
@@ -62,7 +62,7 @@
 		<div class="grid grid-cols-1 gap-2">
 			<div class="flex items-center gap-4">
 				<Input placeholder="Search" />
-				<p class="whitespace-nowrap italic text-gray-500"># of {lobbies.length} active lobbies</p>
+				<p class="whitespace-nowrap text-gray-500 italic"># of {lobbies.length} active lobbies</p>
 			</div>
 			<div class="flex h-[calc(100vh-184px)] flex-col gap-4">
 				<ScrollArea class="h-full w-full">

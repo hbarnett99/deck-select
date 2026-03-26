@@ -11,7 +11,7 @@
 	<form action="?/oauthDiscord" method="POST" class="w-full">
 		<Button
 			type="submit"
-			class="w-full bg-discord-500 text-white hover:bg-discord-600 active:bg-discord-700"
+			class="bg-discord-500 hover:bg-discord-600 active:bg-discord-700 w-full text-white"
 		>
 			Login with Discord
 		</Button>

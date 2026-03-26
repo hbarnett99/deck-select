@@ -21,7 +21,7 @@
 	<div class="col-span-1 grid grid-cols-1 gap-2">
 		{#each orderedPlayers as player}
 			<Card class="inline-flex items-center gap-2 p-4">
-				<Avatar.Root class='mr-1'>
+				<Avatar.Root class="mr-1">
 					<Avatar.Image src="" />
 					<Avatar.Fallback></Avatar.Fallback>
 				</Avatar.Root>
@@ -39,7 +39,6 @@
 							</Tooltip.Content>
 						</Tooltip.Root>
 					</Tooltip.Provider> -->
-
 				{/if}
 			</Card>
 		{/each}

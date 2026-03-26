@@ -11,6 +11,7 @@ Upgrade all dependencies with major version gaps to their latest stable releases
 ## Strategy
 
 Each wave is committed separately for clean rollback points. Within each wave:
+
 1. Consult official migration guides (via context7) before touching code
 2. Run `npm run build` to validate after each wave
 3. Fix all TypeScript/lint errors before moving on
@@ -23,6 +24,7 @@ Each wave is committed separately for clean rollback points. Within each wave:
 **Packages:** `typescript` v5→v6, `eslint` v9→v10, `@eslint/compat` v1→v2, `@eslint/js` v9→v10, `eslint-plugin-svelte` v2→v3, `globals` v15→v17, `vite` v6→v8, `vitest` v3→v4
 
 **Changes:**
+
 - **TypeScript v6** — strict mode adjustments; `tsconfig.json` uses `moduleResolution: bundler` which should remain compatible
 - **ESLint v10** — already on flat config format (`eslint.config.js`) from ESLint v9; migration is largely mechanical plugin/rule name updates
 - **vite v8** — `vite.config.ts` currently imports from `vitest/config`; verify the vite/vitest config split is still valid
@@ -37,6 +39,7 @@ Each wave is committed separately for clean rollback points. Within each wave:
 **Packages:** `tailwindcss` v3→v4, `tailwindcss-animate` (verify v4 compat), `prettier-plugin-tailwindcss` v0.6→v0.7, `tailwind-variants` v0.3→v3, `tailwind-merge` (already updated)
 
 **Changes:**
+
 - Run `npx @tailwindcss/upgrade` codemigrator as the primary migration tool
 - **`tailwind.config.ts` → deleted** — config moves to `src/app.css` as a `@theme {}` block
 - **`postcss.config.js`** — changes from `{ tailwindcss, autoprefixer }` to `{ "@tailwindcss/postcss": {} }`
@@ -54,6 +57,7 @@ Each wave is committed separately for clean rollback points. Within each wave:
 **Packages:** `bits-ui` v1→v2, `paneforge` v1.0.0-next.x→v1.0.2 (stable), `embla-carousel-svelte` (already updated)
 
 **Changes:**
+
 - bits-ui v2 is a significant rewrite of primitive APIs; all 44 shadcn-svelte component categories in `src/lib/components/ui/` need updating
 - **Preferred approach:** Use `npx shadcn-svelte@latest add <component>` to regenerate each component against the new API. Diff before/after for each to reapply any custom modifications.
 - **Fallback:** Manually patch import/API changes per the bits-ui v2 migration guide if CLI regeneration is not available or causes regressions
@@ -71,6 +75,7 @@ Each wave is committed separately for clean rollback points. Within each wave:
 **Packages:** `mode-watcher` v0→v1, `svelte-sonner` v0→v1, `lucide-svelte` v0→v1, `zod` v3→v4, `@supabase/ssr` v0.5→v0.9, `@supabase/supabase-js` v2.49→v2.100
 
 **Changes:**
+
 - **`mode-watcher` v1** — usage is isolated to `src/lib/components/ui/sonner/sonner.svelte` (`import { mode } from "mode-watcher"`, `$mode`). Update to v1 store/rune pattern.
 - **`svelte-sonner` v1** — `src/lib/components/ui/sonner/sonner.svelte` wraps the Toaster; update props and theme integration for v1 API
 - **`lucide-svelte` v1** — individual icon imports (`lucide-svelte/icons/<name>`) pattern should persist; verify the icons in use (ChevronDown, ChevronRight, ChevronLeft, ArrowRight, ArrowLeft, Check, Minus, Circle, Search, X, Ellipsis, Plus) against the v1 rename list
@@ -88,6 +93,7 @@ Each wave is committed separately for clean rollback points. Within each wave:
 **Note:** If `@sveltejs/vite-plugin-svelte` v7 has a hard requirement on Vite v8, it may need to move to Wave 1. Check the compatibility matrix before starting.
 
 **Changes:**
+
 - **`@sveltejs/adapter-auto` v7** — `svelte.config.js` imports `adapter` from this package; verify Vercel auto-detection still works and `vercel.json` remains valid
 - **`@sveltejs/vite-plugin-svelte` v7** — `svelte.config.js` imports `vitePreprocess` from here; check for preprocess API changes across the two major version jumps (v5→v7)
 
@@ -97,19 +103,19 @@ Each wave is committed separately for clean rollback points. Within each wave:
 
 ## Files Primarily Affected
 
-| File | Waves |
-|------|-------|
-| `tailwind.config.ts` | 2 (deleted) |
-| `postcss.config.js` | 2 |
-| `src/app.css` | 2 |
-| `src/lib/components/ui/**` | 3 (all 44 component categories) |
-| `src/lib/components/ui/sonner/sonner.svelte` | 3, 4 |
-| `svelte.config.js` | 5 |
-| `vite.config.ts` | 1 |
-| `eslint.config.js` | 1 |
-| `tsconfig.json` | 1 |
-| `src/hooks.server.ts` | 4 |
-| `package.json` | all |
+| File                                         | Waves                           |
+| -------------------------------------------- | ------------------------------- |
+| `tailwind.config.ts`                         | 2 (deleted)                     |
+| `postcss.config.js`                          | 2                               |
+| `src/app.css`                                | 2                               |
+| `src/lib/components/ui/**`                   | 3 (all 44 component categories) |
+| `src/lib/components/ui/sonner/sonner.svelte` | 3, 4                            |
+| `svelte.config.js`                           | 5                               |
+| `vite.config.ts`                             | 1                               |
+| `eslint.config.js`                           | 1                               |
+| `tsconfig.json`                              | 1                               |
+| `src/hooks.server.ts`                        | 4                               |
+| `package.json`                               | all                             |
 
 ## Out of Scope
 

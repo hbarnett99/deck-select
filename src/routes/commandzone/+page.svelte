@@ -41,7 +41,9 @@
 </script>
 
 <h1>Command Zone</h1>
-<Button variant="outline" onclick={() => dialog.commandSearchDialogActions.openSearchDialog()}>Search Commanders</Button>
+<Button variant="outline" onclick={() => dialog.commandSearchDialogActions.openSearchDialog()}
+	>Search Commanders</Button
+>
 <Card class="flex w-full flex-grow flex-col space-y-2 p-4">
 	<form class="flex space-x-2">
 		<!-- <Label>Commander Search</Label> -->
@@ -60,7 +62,7 @@
 						<!-- <img src={card.image_status} alt={card.name} /> -->
 						<div class="flex flex-col">
 							<span>{card.name}</span>
-							<span class="italic text-gray-500">{card.set_name}</span>
+							<span class="text-gray-500 italic">{card.set_name}</span>
 						</div>
 					</div>
 					<p class="text-gray-500">${card.prices.usd}</p>
@@ -69,7 +71,7 @@
 		{:else if form.search.length > 2}
 			<p class="text-muted-foreground">No results found</p>
 		{:else}
-			<p class="self-center text-muted-foreground">Search for a card</p>
+			<p class="text-muted-foreground self-center">Search for a card</p>
 		{/if}
 	</div>
 </Card>

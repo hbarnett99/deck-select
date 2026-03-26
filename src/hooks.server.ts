@@ -74,9 +74,8 @@ const authGuard: Handle = async ({ event, resolve }) => {
 	event.locals.user = user;
 
 	const isValidRoute =
-		(event.url.pathname.startsWith('/auth') 
-    && !event.url.pathname.endsWith('/signout')) 
-    || event.url.pathname.startsWith('/api/ping');
+		(event.url.pathname.startsWith('/auth') && !event.url.pathname.endsWith('/signout')) ||
+		event.url.pathname.startsWith('/api/ping');
 	const isAuthenticated = !!session;
 
 	// Protected routes handling

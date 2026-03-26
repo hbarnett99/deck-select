@@ -1,9 +1,5 @@
 <script>
-	import { Card } from "$lib/components/ui/card";
-
-
+	import { Card } from '$lib/components/ui/card';
 </script>
 
-<Card class="grid gap-4 flex-1">
-    Player Card
-</Card>
+<Card class="grid flex-1 gap-4">Player Card</Card>

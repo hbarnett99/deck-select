@@ -18,7 +18,6 @@ export async function pingDatabase(supabase: SupabaseClient) {
 		if (error) {
 			throw error;
 		}
-
 	} catch (err) {
 		throw err; // Re-throw the error to be caught by the caller
 	}

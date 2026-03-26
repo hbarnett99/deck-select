@@ -101,7 +101,7 @@
 										<!-- Text content -->
 										<div class="flex flex-col text-left">
 											<span class="text-sm font-medium">{card.name}</span>
-											<span class="text-xs italic text-muted-foreground">{card.set_name}</span>
+											<span class="text-muted-foreground text-xs italic">{card.set_name}</span>
 										</div>
 									</div>
 									<p class="text-muted-foreground">
@@ -112,11 +112,11 @@
 						</ToggleGroup.Root>
 					{:else if form.search.length > 2}
 						<div class="flex h-full flex-grow items-center justify-center">
-							<p class="justify-center self-center text-muted-foreground">No results found.</p>
+							<p class="text-muted-foreground justify-center self-center">No results found.</p>
 						</div>
 					{:else}
 						<div class="flex h-full flex-grow items-center justify-center">
-							<p class="justify-center self-center text-muted-foreground">Search for a card.</p>
+							<p class="text-muted-foreground justify-center self-center">Search for a card.</p>
 						</div>
 					{/if}
 				</ScrollArea>
