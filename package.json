@@ -65,6 +65,7 @@
 	"overrides": {
 		"vite": {
 			"rollup": "npm:@rollup/wasm-node"
-		}
+		},
+		"typescript": "^6.0.2"
 	}
 }
