@@ -26,10 +26,11 @@ export const actions: Actions = {
 	create: async ({ request, locals: { supabase, user } }) => {
 		const form = await superValidate(request, zod(CreatePoolSchema));
 		if (!form.valid) return fail(400, { form });
+		if (!user) return fail(401, { form });
 
 		const { data: pool, error } = await supabase
 			.from('pools')
-			.insert({ name: form.data.name, created_by: user!.id })
+			.insert({ name: form.data.name, created_by: user.id })
 			.select('id')
 			.single();
 

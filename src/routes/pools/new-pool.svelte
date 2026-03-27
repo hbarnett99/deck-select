@@ -11,7 +11,7 @@
 	let {
 		data,
 		open = $bindable(false)
-	}: { data: SuperValidated<Infer<typeof CreatePoolSchema>>; open: boolean } = $props();
+	}: { data: SuperValidated<Infer<typeof CreatePoolSchema>>; open?: boolean } = $props();
 
 	const sf = superForm(data, {
 		validators: zodClient(CreatePoolSchema),
