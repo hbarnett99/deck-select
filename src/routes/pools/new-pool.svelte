@@ -8,17 +8,15 @@
 	import { zod4Client as zodClient } from 'sveltekit-superforms/adapters';
 	import { CreatePoolSchema } from '$lib/schemas/pool';
 
-	let { data }: { data: SuperValidated<Infer<typeof CreatePoolSchema>> } = $props();
-
-	export const poolDialogState = $state({ open: false });
-	export const poolDialogActions = {
-		open: () => (poolDialogState.open = true)
-	};
+	let {
+		data,
+		open = $bindable(false)
+	}: { data: SuperValidated<Infer<typeof CreatePoolSchema>>; open: boolean } = $props();
 
 	const sf = superForm(data, {
 		validators: zodClient(CreatePoolSchema),
 		onResult: ({ result }) => {
-			if (result.type === 'redirect') poolDialogState.open = false;
+			if (result.type === 'redirect') open = false;
 		}
 	});
 
@@ -27,7 +25,7 @@
 	const fForm = sf as unknown as SuperForm<Record<string, unknown>>;
 </script>
 
-<Dialog.Root bind:open={poolDialogState.open}>
+<Dialog.Root bind:open>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
 			<Dialog.Title>New Pool</Dialog.Title>
@@ -47,7 +45,7 @@
 				<Button
 					variant="outline"
 					type="button"
-					onclick={() => (poolDialogState.open = false)}
+					onclick={() => (open = false)}
 				>
 					Cancel
 				</Button>

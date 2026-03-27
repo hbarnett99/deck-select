@@ -8,13 +8,13 @@
 
 	let { data }: { data: PageData } = $props();
 
-	let newPoolDialog: NewPool;
+	let newPoolOpen = $state(false);
 </script>
 
 <div class="w-full max-w-2xl">
 	<div class="mb-4 flex items-center justify-between">
 		<h1 class="text-2xl font-semibold">Pools</h1>
-		<Button onclick={() => newPoolDialog.poolDialogActions.open()}>
+		<Button onclick={() => (newPoolOpen = true)}>
 			<Plus class="mr-2 h-4 w-4" />
 			New Pool
 		</Button>
@@ -42,4 +42,4 @@
 	{/if}
 </div>
 
-<NewPool bind:this={newPoolDialog} data={data.form} />
+<NewPool data={data.form} bind:open={newPoolOpen} />
