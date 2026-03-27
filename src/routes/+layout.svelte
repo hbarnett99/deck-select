@@ -27,11 +27,9 @@
 			<nav class="flex items-center justify-between py-4">
 				<span class="space-x-4">
 					<Button variant="ghost" href="/" class="text-lg">Deck Select</Button>
-					<!-- <Separator orientation="vertical" /> -->
 					<Button variant="ghost" href="/lobby" class="text-lg">Lobbies</Button>
+					<Button variant="ghost" href="/pools" class="text-lg">Pools</Button>
 					<Button variant="ghost" href="/commandzone" class="text-lg">Command Zone</Button>
-					<Button variant="ghost" href="/statistics" class="text-lg">Statistics</Button>
-					<Button variant="ghost" href="/admin" class="text-lg">Admin</Button>
 				</span>
 				<span class="space-x-4">
 					<Button variant="ghost" onclick={logSession}>Log Session</Button>
