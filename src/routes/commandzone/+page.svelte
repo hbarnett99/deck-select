@@ -1,79 +1,40 @@
 <script lang="ts">
-	import CommanderSearch from './commander-search.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { Card } from '$lib/components/ui/card';
-	import Input from '$lib/components/ui/input/input.svelte';
-	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte';
-	import ScryfallService from '$lib/utils/scryfall.util';
-	import type { ScryfallCard } from '@scryfall/api-types';
+	import * as Table from '$lib/components/ui/table';
+	import type { PageData } from './$types';
 
-	let form = $state({ search: '' });
-	let searchResults = $state<ScryfallCard.Any[]>();
-	let timeout: NodeJS.Timeout;
-	let searching = $state(false);
-	$inspect({ searchResults });
-
-	function handleSearch(search: string) {
-		if (search.length < 3) {
-			if (search.length === 0 && searchResults !== undefined) searchResults = undefined;
-			return;
-		}
-		searching = true;
-		if (timeout) clearTimeout(timeout);
-		timeout = setTimeout(() => searchCommanders(search), 300);
-	}
-
-	const searchCommanders = async (search: string) =>
-		await ScryfallService.searchCommanders(search)
-			.then((results) => (searchResults = results.data))
-			.finally(() => (searching = false));
-
-	let isDialogOpen = $state(false);
-	const handleOpen = () => {
-		isDialogOpen = true;
-	};
-
-	let dialog: CommanderSearch;
-
-	$effect(() => {
-		handleSearch(form.search);
-	});
+	let { data }: { data: PageData } = $props();
 </script>
 
-<h1>Command Zone</h1>
-<Button variant="outline" onclick={() => dialog.commandSearchDialogActions.openSearchDialog()}
-	>Search Commanders</Button
->
-<Card class="flex w-full flex-grow flex-col space-y-2 p-4">
-	<form class="flex space-x-2">
-		<!-- <Label>Commander Search</Label> -->
-		<Input type="text" placeholder="Search for a commander" bind:value={form.search} />
-	</form>
-	<div class="space-y-2">
-		{#if searching}
-			<Skeleton class="h-16" />
-			<Skeleton class="h-16" />
-			<Skeleton class="h-16" />
-			<Skeleton class="h-16" />
-		{:else if (searchResults ?? []).length > 0}
-			{#each searchResults! as card}
-				<Button variant="ghost" class="flex h-16 w-full flex-grow justify-between">
-					<div class="items-left flex flex-col space-x-2">
-						<!-- <img src={card.image_status} alt={card.name} /> -->
-						<div class="flex flex-col">
-							<span>{card.name}</span>
-							<span class="text-gray-500 italic">{card.set_name}</span>
-						</div>
-					</div>
-					<p class="text-gray-500">${card.prices.usd}</p>
-				</Button>
+<div class="w-full max-w-4xl">
+	<h1 class="mb-4 text-2xl font-semibold">Command Zone</h1>
+	<Table.Root>
+		<Table.Header>
+			<Table.Row>
+				<Table.Head>Commander</Table.Head>
+				<Table.Head class="text-right">Claimed</Table.Head>
+				<Table.Head class="text-right">W / L / D</Table.Head>
+				<Table.Head class="text-right">Avg Value</Table.Head>
+			</Table.Row>
+		</Table.Header>
+		<Table.Body>
+			{#each data.stats as s (s.commander_id)}
+				<Table.Row>
+					<Table.Cell class="font-medium">{s.commander_name}</Table.Cell>
+					<Table.Cell class="text-right">{s.times_claimed ?? 0}</Table.Cell>
+					<Table.Cell class="text-right">
+						{s.wins ?? 0} / {s.losses ?? 0} / {s.draws ?? 0}
+					</Table.Cell>
+					<Table.Cell class="text-right">
+						{s.avg_deck_value_usd != null ? `$${s.avg_deck_value_usd}` : '—'}
+					</Table.Cell>
+				</Table.Row>
+			{:else}
+				<Table.Row>
+					<Table.Cell colspan={4} class="text-muted-foreground py-8 text-center">
+						No commanders yet — add some to a pool to get started.
+					</Table.Cell>
+				</Table.Row>
 			{/each}
-		{:else if form.search.length > 2}
-			<p class="text-muted-foreground">No results found</p>
-		{:else}
-			<p class="text-muted-foreground self-center">Search for a card</p>
-		{/if}
-	</div>
-</Card>
-
-<CommanderSearch bind:this={dialog} />
+		</Table.Body>
+	</Table.Root>
+</div>
