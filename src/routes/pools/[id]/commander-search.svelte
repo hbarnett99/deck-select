@@ -13,6 +13,7 @@
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { AddCommanderSchema } from '$lib/schemas/pool';
 	import { toast } from 'svelte-sonner';
+	import { untrack } from 'svelte';
 
 	let {
 		data,
@@ -32,7 +33,7 @@
 		open = false;
 	}
 
-	const { enhance, submitting } = superForm(data, {
+	const { enhance, submitting } = untrack(() => superForm(data, {
 		validators: zod4Client(AddCommanderSchema),
 		onResult: ({ result }) => {
 			if (result.type === 'success') {
@@ -42,7 +43,7 @@
 				toast.error(result.data.message as string);
 			}
 		}
-	});
+	}));
 
 	function handleSearch(value: string) {
 		if (value.length < 3) {
@@ -61,6 +62,7 @@
 
 	$effect(() => {
 		handleSearch(search);
+		return () => clearTimeout(timeout);
 	});
 </script>
 

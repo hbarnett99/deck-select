@@ -17,8 +17,6 @@
 
 		return () => data.subscription.unsubscribe();
 	});
-
-	const logSession = () => console.log(session);
 </script>
 
 <div class="bg-background flex min-h-screen flex-col px-16 font-sans antialiased">
@@ -32,8 +30,6 @@
 					<Button variant="ghost" href="/commandzone" class="text-lg">Command Zone</Button>
 				</span>
 				<span class="space-x-4">
-					<Button variant="ghost" onclick={logSession}>Log Session</Button>
-
 					{#if session}
 						<a href="/profile" class="text-blue-500">Profile</a>
 						<a href="/auth/signout" class="text-blue-500">Sign Out</a>

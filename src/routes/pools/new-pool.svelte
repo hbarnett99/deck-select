@@ -7,18 +7,19 @@
 	import { superForm, type SuperValidated, type Infer, type SuperForm } from 'sveltekit-superforms';
 	import { zod4Client as zodClient } from 'sveltekit-superforms/adapters';
 	import { CreatePoolSchema } from '$lib/schemas/pool';
+	import { untrack } from 'svelte';
 
 	let {
 		data,
 		open = $bindable(false)
 	}: { data: SuperValidated<Infer<typeof CreatePoolSchema>>; open?: boolean } = $props();
 
-	const sf = superForm(data, {
+	const sf = untrack(() => superForm(data, {
 		validators: zodClient(CreatePoolSchema),
 		onResult: ({ result }) => {
 			if (result.type === 'redirect') open = false;
 		}
-	});
+	}));
 
 	const { form, enhance, submitting } = sf;
 	// formsnap requires SuperForm<Record<string, unknown>> — cast through unknown
