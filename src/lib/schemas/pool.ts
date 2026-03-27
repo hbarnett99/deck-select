@@ -12,3 +12,7 @@ export const CreatePoolSchema = z.object({
 export const AddCommanderSchema = z.object({
 	commanderName: z.string().min(1, 'Commander name is required')
 });
+
+export const RemoveCommanderSchema = z.object({
+	commanderId: z.string().uuid()
+});

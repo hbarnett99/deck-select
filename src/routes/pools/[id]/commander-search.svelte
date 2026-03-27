@@ -54,6 +54,7 @@
 		timeout = setTimeout(() => {
 			ScryfallService.searchCommanders(value)
 				.then((results) => (searchResults = results.data as ScryfallCard.Normal[]))
+				.catch(() => { searchResults = []; })
 				.finally(() => (searching = false));
 		}, 300);
 	}
@@ -88,7 +89,7 @@
 							class="my-2 grid grid-cols-1 gap-2"
 							bind:value={selectedCommander}
 						>
-							{#each searchResults! as card}
+							{#each searchResults as card}
 								<ToggleGroup.Item
 									class="flex h-16 w-full flex-grow items-center justify-between p-2"
 									value={card.name}

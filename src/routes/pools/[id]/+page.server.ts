@@ -2,7 +2,7 @@
 import { error, fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { AddCommanderSchema } from '$lib/schemas/pool';
+import { AddCommanderSchema, RemoveCommanderSchema } from '$lib/schemas/pool';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, locals: { supabase } }) => {
@@ -79,15 +79,14 @@ export const actions: Actions = {
 	},
 
 	remove: async ({ request, params, locals: { supabase } }) => {
-		const data = await request.formData();
-		const commanderId = data.get('commanderId') as string | null;
-		if (!commanderId) return fail(400);
+		const form = await superValidate(request, zod4(RemoveCommanderSchema));
+		if (!form.valid) return fail(400);
 
 		const { error: deleteError } = await supabase
 			.from('pool_commanders')
 			.delete()
 			.eq('pool_id', params.id)
-			.eq('commander_id', commanderId);
+			.eq('commander_id', form.data.commanderId);
 
 		if (deleteError) {
 			console.error('pool_commanders delete error:', deleteError.message);

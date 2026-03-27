@@ -1,6 +1,6 @@
 // src/lib/schemas/pool.test.ts
 import { describe, it, expect } from 'vitest';
-import { CreatePoolSchema, AddCommanderSchema } from './pool';
+import { CreatePoolSchema, AddCommanderSchema, RemoveCommanderSchema } from './pool';
 
 describe('CreatePoolSchema', () => {
 	it('accepts a valid name', () => {
@@ -29,5 +29,19 @@ describe('AddCommanderSchema', () => {
 
 	it('rejects empty commander name', () => {
 		expect(AddCommanderSchema.safeParse({ commanderName: '' }).success).toBe(false);
+	});
+});
+
+describe('RemoveCommanderSchema', () => {
+	it('accepts a valid UUID', () => {
+		expect(RemoveCommanderSchema.safeParse({ commanderId: '550e8400-e29b-41d4-a716-446655440000' }).success).toBe(true);
+	});
+
+	it('rejects non-UUID', () => {
+		expect(RemoveCommanderSchema.safeParse({ commanderId: 'not-a-uuid' }).success).toBe(false);
+	});
+
+	it('rejects empty string', () => {
+		expect(RemoveCommanderSchema.safeParse({ commanderId: '' }).success).toBe(false);
 	});
 });
