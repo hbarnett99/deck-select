@@ -133,7 +133,7 @@ class ScryfallService {
 	}
 
 	static searchCommanders = async (query: string) =>
-		await ScryfallService.searchCards(`is:commander ${query}`);
+		await ScryfallService.searchCards(`is:commander name:${query} order:edhrec`);
 }
 
 export default ScryfallService;

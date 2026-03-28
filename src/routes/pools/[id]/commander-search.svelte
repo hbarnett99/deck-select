@@ -89,7 +89,8 @@
 						<ToggleGroup.Root
 							type="single"
 							class="my-2 grid grid-cols-1 gap-2"
-							bind:value={selectedCommander}
+							value={selectedCommander}
+							onValueChange={(v) => (selectedCommander = v ?? undefined)}
 						>
 							{#each searchResults as card}
 								<ToggleGroup.Item
