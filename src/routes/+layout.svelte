@@ -1,6 +1,6 @@
 <script>
 	import '../app.css';
-	import { invalidate } from '$app/navigation';
+	import { invalidate, goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator';
@@ -17,6 +17,11 @@
 
 		return () => data.subscription.unsubscribe();
 	});
+
+	async function signOut() {
+		await supabase.auth.signOut();
+		goto('/auth');
+	}
 </script>
 
 <div class="bg-background flex min-h-screen flex-col px-16 font-sans antialiased">
@@ -32,7 +37,7 @@
 				<span class="space-x-4">
 					{#if session}
 						<a href="/profile" class="text-blue-500">Profile</a>
-						<a href="/auth/signout" class="text-blue-500">Sign Out</a>
+						<button onclick={signOut} class="text-blue-500">Sign Out</button>
 					{:else}
 						<a href="/auth" class="text-blue-500">Login</a>
 					{/if}
