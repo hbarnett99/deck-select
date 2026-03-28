@@ -54,7 +54,13 @@
 		clearTimeout(timeout);
 		timeout = setTimeout(() => {
 			ScryfallService.searchCommanders(value)
-				.then((results) => (searchResults = results.data as ScryfallCard.Normal[]))
+				.then((results) => {
+					const data = results.data as ScryfallCard.Normal[];
+					const lower = value.toLowerCase();
+					const startsWith = data.filter((c) => c.name.toLowerCase().startsWith(lower));
+					const contains = data.filter((c) => !c.name.toLowerCase().startsWith(lower));
+					searchResults = [...startsWith, ...contains];
+				})
 				.catch(() => { searchResults = []; })
 				.finally(() => (searching = false));
 		}, 300);
