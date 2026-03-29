@@ -33,7 +33,7 @@
 		open = false;
 	}
 
-	const { enhance, submitting } = untrack(() => superForm(data, {
+	const { form, enhance, submitting } = untrack(() => superForm(data, {
 		validators: zod4Client(AddCommanderSchema),
 		onResult: ({ result }) => {
 			if (result.type === 'success') {
@@ -44,6 +44,10 @@
 			}
 		}
 	}));
+
+	$effect(() => {
+		$form.commanderName = selectedCommander ?? '';
+	});
 
 	function handleSearch(value: string) {
 		if (value.length < 3) {
@@ -95,8 +99,7 @@
 						<ToggleGroup.Root
 							type="single"
 							class="my-2 grid grid-cols-1 gap-2"
-							value={selectedCommander}
-							onValueChange={(v) => (selectedCommander = v ?? undefined)}
+							bind:value={selectedCommander}
 						>
 							{#each searchResults as card}
 								<ToggleGroup.Item
