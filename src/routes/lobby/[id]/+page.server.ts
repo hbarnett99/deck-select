@@ -106,7 +106,8 @@ export const actions: Actions = {
 			.eq('id', id)
 			.single();
 
-		if (lobbyRow?.admin_id === user.id) {
+		if (!lobbyRow) return fail(404);
+		if (lobbyRow.admin_id === user.id) {
 			return fail(400, { message: 'Admin cannot leave. Close the lobby instead.' });
 		}
 
