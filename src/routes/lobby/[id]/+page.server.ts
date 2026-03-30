@@ -35,11 +35,13 @@ export const load: PageServerLoad = async ({ params, locals: { supabase, user } 
 
 	if (lobbyError || !lobby) throw error(404, 'Lobby not found');
 
-	// Auto-join: insert current user if not already a player (conflict = do nothing)
-	await supabase.from('lobby_players').upsert(
-		{ lobby_id: id, user_id: user.id, is_ready: false },
-		{ onConflict: 'lobby_id,user_id', ignoreDuplicates: true }
-	);
+	// Auto-join: only join waiting lobbies (not mid-draw or complete)
+	if (lobby.status === 'waiting') {
+		await supabase.from('lobby_players').upsert(
+			{ lobby_id: id, user_id: user.id, is_ready: false },
+			{ onConflict: 'lobby_id,user_id', ignoreDuplicates: true }
+		);
+	}
 
 	// Fetch all players after potential insert
 	const { data: playerRows } = await supabase
@@ -97,6 +99,17 @@ export const actions: Actions = {
 		if (!user) return fail(401);
 		const { id } = params;
 
+		// Check if user is the admin — admin cannot leave
+		const { data: lobbyRow } = await supabase
+			.from('lobbies')
+			.select('admin_id')
+			.eq('id', id)
+			.single();
+
+		if (lobbyRow?.admin_id === user.id) {
+			return fail(400, { message: 'Admin cannot leave. Close the lobby instead.' });
+		}
+
 		// Delete current user from lobby
 		const { error: deleteError } = await supabase
 			.from('lobby_players')
@@ -109,11 +122,12 @@ export const actions: Actions = {
 			return fail(500);
 		}
 
-		// Reset remaining players' ready status
-		await supabase
+		// Reset remaining players' ready status (requires service role to bypass RLS)
+		await serviceClient()
 			.from('lobby_players')
 			.update({ is_ready: false })
-			.eq('lobby_id', id);
+			.eq('lobby_id', id)
+			.neq('user_id', user.id);
 
 		redirect(303, '/lobby');
 	}
