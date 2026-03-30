@@ -59,7 +59,10 @@ export const actions: Actions = {
 
 		if (playerError) {
 			console.error('insert creator into lobby_players error:', playerError.message);
-			await supabase.from('lobbies').delete().eq('id', lobby.id);
+			const { error: cleanupError } = await supabase.from('lobbies').delete().eq('id', lobby.id);
+			if (cleanupError) {
+				console.error('orphan lobby cleanup failed:', cleanupError.message, 'lobby_id:', lobby.id);
+			}
 			return fail(500, { form });
 		}
 
