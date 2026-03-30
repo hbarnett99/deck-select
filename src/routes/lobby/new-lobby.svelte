@@ -30,13 +30,20 @@
 		})
 	);
 
-	const { form, enhance, submitting } = sf;
+	const { form, enhance, submitting, reset } = sf;
 	const fForm = sf as unknown as SuperForm<Record<string, unknown>>;
 
 	let selectedPoolId = $state<string>('');
 
 	$effect(() => {
 		$form.pool_id = selectedPoolId;
+	});
+
+	$effect(() => {
+		if (!open) {
+			reset();
+			selectedPoolId = '';
+		}
 	});
 
 	const selectedPoolLabel = $derived(

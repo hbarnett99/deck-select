@@ -15,7 +15,7 @@
 		};
 	} = $props();
 
-	const playerCount = $derived(lobby.lobby_players?.length ?? 0);
+	const playerCount = $derived(lobby.lobby_players.length);
 </script>
 
 <a href="/lobby/{lobby.id}" class="block">
