@@ -56,4 +56,12 @@ describe('CreateLobbySchema', () => {
 		expect(result.success).toBe(true);
 		if (result.success) expect(result.data.practice_mode).toBe(false);
 	});
+
+	it('rejects whitespace-only name', () => {
+		const result = CreateLobbySchema.safeParse({
+			name: '   ',
+			pool_id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'
+		});
+		expect(result.success).toBe(false);
+	});
 });
