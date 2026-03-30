@@ -81,7 +81,7 @@
 					filter: `lobby_id=eq.${data.lobby.id}`
 				},
 				(payload) => {
-					const deleted = payload.old as { user_id: string };
+					const deleted = payload.old as { id: string; user_id: string };
 					if (deleted.user_id === data.currentUserId) {
 						goto('/lobby');
 						return;
