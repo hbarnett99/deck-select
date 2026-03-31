@@ -25,8 +25,8 @@ A web app for a friend group that regularly builds $50 Magic: The Gathering Comm
 ```
 # .env
 PUBLIC_SUPABASE_URL=
-PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
 
 DISCORD_CLIENT_ID=
 DISCORD_CLIENT_SECRET=
@@ -169,12 +169,36 @@ Create a Postgres view `commander_stats` that aggregates `claims` — do not dup
 - Discord is the **only** OAuth provider.
 - After OAuth callback, check `whitelisted_users` table for the user's `user_id`.
 - Gate in **both** `hooks.server.ts` (redirect non-whitelisted to `/auth/error`) **and** RLS policies on all `(app)` tables.
-- The `SUPABASE_SERVICE_ROLE_KEY` is only used server-side for whitelist checks and admin operations — never expose it to the client.
+- The `SUPABASE_SECRET_KEY` is only used server-side for whitelist checks and admin operations — never expose it to the client.
 
 ### OAuth redirect URL
 ```typescript
 // oauth.util.ts — use env var, not hardcoded localhost
 redirectTo: `${PUBLIC_SITE_URL}/auth/callback`
+```
+
+---
+
+## Branching Workflow
+
+### Git
+
+- Branch off `main`: `git checkout -b feat/<short-name>` (e.g. `feat/pool-crud`, `feat/lobby-draw`)
+- All work for a feature lives on that branch. Open a PR against `main` when done.
+- Never commit directly to `main`.
+
+### Supabase
+
+- **No Supabase branching** — too costly for this project. All migrations run directly against the production project (`fckttldjpgzgdxrdweaa`).
+- Commit migration files to `supabase/migrations/` on the feature branch so schema changes travel with the code.
+- Apply migrations via the Supabase MCP (`mcp__supabase__apply_migration`) during the session.
+
+### Keeping types in sync
+
+After applying a migration, regenerate types via MCP:
+
+```text
+mcp__supabase__generate_typescript_types → overwrite src/lib/types/database.types.ts
 ```
 
 ---
@@ -239,7 +263,8 @@ The draw must happen in a **single server action** (never client-side) to guaran
 | Feature | Status |
 |---|---|
 | Discord OAuth login page | ✅ Done |
-| Whitelist enforcement | ⬜ To build |
+| Database schema + migrations | ✅ Done (`supabase/migrations/0001_app_tables.sql`) |
+| Whitelist enforcement (`hooks.server.ts` + RLS) | ✅ Done |
 | Commander CRUD + pool management | ⬜ To build |
 | Lobby create / join / ready-up | ⬜ To build |
 | Admin controls (practice mode, draw trigger, pool filter) | ⬜ To build |
@@ -250,7 +275,8 @@ The draw must happen in a **single server action** (never client-side) to guaran
 
 ---
 
-## Known Decisions Pending
+## Known Decisions
 
-- **Whitelist management UI** — how are users added to `whitelisted_users`? (Direct Supabase dashboard, or an admin page in-app?) Decide before building `hooks.server.ts` gate.
-- **Supabase migrations** — schema currently only exists in the dashboard. Before adding new tables, export and commit a baseline migration: `supabase db dump --schema public > supabase/migrations/0001_baseline.sql`.
+- **Whitelist management** — via Supabase dashboard for now. Future admin UI is planned; hook point is `src/lib/utils/whitelist.util.ts`.
+- **Claims insert** — uses the service role client (bypasses RLS). The draw server action must create a `createClient` with `SUPABASE_SECRET_KEY` for this operation.
+- **Card draw idempotency** — guard against double-draw: `UPDATE lobbies SET status='drawing' WHERE status='waiting' AND id=$1`; if 0 rows updated, abort before assigning commanders.
