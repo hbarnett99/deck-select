@@ -1,6 +1,6 @@
 <script>
 	import '../app.css';
-	import { invalidate } from '$app/navigation';
+	import { invalidate, goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator';
@@ -18,7 +18,10 @@
 		return () => data.subscription.unsubscribe();
 	});
 
-	const logSession = () => console.log(session);
+	async function signOut() {
+		await supabase.auth.signOut();
+		goto('/auth');
+	}
 </script>
 
 <div class="bg-background flex min-h-screen flex-col px-16 font-sans antialiased">
@@ -27,18 +30,14 @@
 			<nav class="flex items-center justify-between py-4">
 				<span class="space-x-4">
 					<Button variant="ghost" href="/" class="text-lg">Deck Select</Button>
-					<!-- <Separator orientation="vertical" /> -->
 					<Button variant="ghost" href="/lobby" class="text-lg">Lobbies</Button>
+					<Button variant="ghost" href="/pools" class="text-lg">Pools</Button>
 					<Button variant="ghost" href="/commandzone" class="text-lg">Command Zone</Button>
-					<Button variant="ghost" href="/statistics" class="text-lg">Statistics</Button>
-					<Button variant="ghost" href="/admin" class="text-lg">Admin</Button>
 				</span>
 				<span class="space-x-4">
-					<Button variant="ghost" onclick={logSession}>Log Session</Button>
-
 					{#if session}
 						<a href="/profile" class="text-blue-500">Profile</a>
-						<a href="/auth/signout" class="text-blue-500">Sign Out</a>
+						<button onclick={signOut} class="text-blue-500">Sign Out</button>
 					{:else}
 						<a href="/auth" class="text-blue-500">Login</a>
 					{/if}

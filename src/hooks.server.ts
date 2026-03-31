@@ -1,9 +1,10 @@
 import { createServerClient } from '@supabase/ssr';
 import { type Handle, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY } from '$env/static/public';
 import type { Database } from '$lib/types/database.types';
 import type { Session, User } from '@supabase/supabase-js';
+import { isWhitelisted } from '$lib/utils/whitelist.util';
 
 // Define the return type for safeGetSession
 interface SafeSession {
@@ -15,7 +16,7 @@ interface SafeSession {
 const supabase: Handle = async ({ event, resolve }) => {
 	event.locals.supabase = createServerClient<Database>(
 		PUBLIC_SUPABASE_URL,
-		PUBLIC_SUPABASE_ANON_KEY,
+		PUBLIC_SUPABASE_PUBLISHABLE_KEY,
 		{
 			cookies: {
 				getAll: () => event.cookies.getAll(),
@@ -73,6 +74,7 @@ const authGuard: Handle = async ({ event, resolve }) => {
 	event.locals.session = session;
 	event.locals.user = user;
 
+	const isCallbackRoute = event.url.pathname === '/auth/callback';
 	const isValidRoute =
 		(event.url.pathname.startsWith('/auth') && !event.url.pathname.endsWith('/signout')) ||
 		event.url.pathname.startsWith('/api/ping');
@@ -83,14 +85,36 @@ const authGuard: Handle = async ({ event, resolve }) => {
 		throw redirect(303, '/auth');
 	}
 
-	// Prevent authenticated users from accessing auth routes
-	if (isAuthenticated && isValidRoute) {
+	// Prevent authenticated users from accessing auth routes,
+	// but never block the OAuth callback — it must run regardless of session state.
+	if (isAuthenticated && isValidRoute && !isCallbackRoute) {
 		throw redirect(303, '/');
 	}
 
 	return resolve(event);
 };
 
-export const handle: Handle = sequence(supabase, authGuard);
+// Whitelist guard — runs after authGuard has set event.locals.user.
+// Authenticated users not in whitelisted_users are sent to the error page.
+const whitelistGuard: Handle = async ({ event, resolve }) => {
+	const { user } = event.locals;
+
+	// Only check authenticated users on protected routes.
+	const isPublicRoute =
+		event.url.pathname.startsWith('/auth') || event.url.pathname.startsWith('/api/ping');
+
+	if (!user || isPublicRoute) {
+		return resolve(event);
+	}
+
+	const allowed = await isWhitelisted(event.locals.supabase, user.id);
+	if (!allowed) {
+		throw redirect(303, '/auth/error?message=not_whitelisted');
+	}
+
+	return resolve(event);
+};
+
+export const handle: Handle = sequence(supabase, authGuard, whitelistGuard);
 
 // Type declarations for app-wide use

@@ -1,0 +1,1 @@
+ALTER TABLE lobby_players REPLICA IDENTITY FULL;
